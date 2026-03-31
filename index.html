@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Lego MOC Showroom</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --lego-yellow: #ffd500;
+            --bg: #0a0a0a;
+            --gpu: translate3d(0,0,0);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            margin: 0;
+            font-family: -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Hero Car Section */
+        .showroom {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        .car-card {
+            width: 80%;
+            max-width: 500px;
+            background: linear-gradient(145deg, #1a1a1a, #000);
+            border-radius: 30px;
+            padding: 20px;
+            border: 2px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            text-align: center;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: var(--gpu);
+        }
+
+        /* This represents your Lego cars */
+        .lego-car-graphic {
+            width: 100%;
+            height: 200px;
+            background: #222;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--lego-yellow);
+            border: 4px dashed #444;
+        }
+
+        /* --- THE DASHBOARD CLOCK --- */
+        .dash-clock {
+            width: 250px;
+            height: 100px;
+            background: #000;
+            border: 2px solid var(--neon);
+            border-radius: 15px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 0 15px var(--neon);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        #time {
+            font-size: 2.5rem;
+            color: var(--neon);
+            font-weight: 800;
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .btn-toggle {
+            background: var(--neon);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.4);
+        }
+
+        /* iPad Mode Toggle */
+        .analog-mode .dash-clock {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="showroom">
+        <div id="car-card" class="car-card">
+            <h2 id="car-name" style="color:var(--lego-yellow)">LEGO GT-ULTRA</h2>
+            
+            <div class="lego-car-graphic">
+                [ CUSTOM LEGO BUILD ]
+            </div>
+
+            <div id="clock-trigger" class="dash-clock" onclick="toggleClock()">
+                <div id="time">00:00:00</div>
+                <div id="ampm" style="color:white; font-size: 0.8rem;">SYDNEY, AU</div>
+            </div>
+
+            <div class="stats">
+                <div>Top Speed: 12 Studs/s</div>
+                <div>Pieces: 150+</div>
+            </div>
+
+            <button class="btn-toggle" onclick="switchCar()">Next Build</button>
+        </div>
+    </div>
+
+    <script>
+        let isDigital = true;
+        let carIndex = 0;
+        const cars = [
+            { name: "LEGO BLUE-TURBO", color: "#00f2ff" },
+            { name: "LEGO YELLOW-DRIFT", color: "#ffd500" }
+        ];
+
+        function updateClock() {
+            const now = new Date();
+            const options = { timeZone: "Australia/Sydney", hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+            const timeStr = new Intl.DateTimeFormat('en-AU', options).format(now);
+            
+            document.getElementById('time').innerText = timeStr.split(' ')[0];
+        }
+
+        function toggleClock() {
+            isDigital = !isDigital;
+            document.body.classList.toggle('analog-mode');
+            // This triggers your previous morph animation logic
+        }
+
+        function switchCar() {
+            carIndex = (carIndex + 1) % cars.length;
+            document.getElementById('car-name').innerText = cars[carIndex].name;
+            document.getElementById('car-name').style.color = cars[carIndex].color;
+            
+            // Animation for iPad
+            const card = document.getElementById('car-card');
+            card.style.transform = "scale(0.9) rotateY(10deg)";
+            setTimeout(() => {
+                card.style.transform = "scale(1) rotateY(0deg)";
+            }, 200);
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
